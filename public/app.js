@@ -65,6 +65,7 @@ const state = {
   celebrationFlavorIndex: -1,
   activeTierId: SITE_CONTENT.tiers[0].id,
   processingTimer: null,
+  confettiTimer: null,
   toastTimer: null
 };
 
@@ -78,6 +79,7 @@ const faqList = document.getElementById("faq-list");
 const flavorWall = document.getElementById("flavor-wall");
 const flavorRefresh = document.getElementById("flavor-refresh");
 const toast = document.getElementById("toast");
+const confettiOverlay = document.getElementById("confetti-overlay");
 
 const celebrationModal = document.getElementById("celebration-modal");
 const modalPanel = celebrationModal.querySelector(".modal-panel");
@@ -85,7 +87,15 @@ const modalClose = document.getElementById("modal-close");
 const modalDone = document.getElementById("modal-done");
 const modalTitle = document.getElementById("celebration-title");
 const modalMessage = document.getElementById("modal-message");
-const receiptCode = document.getElementById("receipt-code");
+const receiptId = document.getElementById("receipt-id");
+const receiptDate = document.getElementById("receipt-date");
+const receiptStatus = document.getElementById("receipt-status");
+const receiptItem = document.getElementById("receipt-item");
+const receiptItemPrice = document.getElementById("receipt-item-price");
+const receiptFee = document.getElementById("receipt-fee");
+const receiptTax = document.getElementById("receipt-tax");
+const receiptTotal = document.getElementById("receipt-total");
+const receiptNote = document.getElementById("receipt-note");
 const confettiZone = document.getElementById("confetti-zone");
 
 function renderTiers() {
@@ -156,6 +166,43 @@ function buildReceiptCode() {
   return `CANDY-${stamp}-${serial}`;
 }
 
+function formatCurrency(amount) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
+}
+
+function formatReceiptDate(date) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  }).format(date);
+}
+
+function getReceiptBreakdown(tier) {
+  const subtotal = Number.parseFloat(tier.priceLabel.replace(/[^0-9.]/g, "")) || 0;
+  const serviceFee = subtotal >= 10 ? 0.99 : 0.69;
+  const tax = Number(((subtotal + serviceFee) * 0.0825).toFixed(2));
+  const total = Number((subtotal + serviceFee + tax).toFixed(2));
+  return { subtotal, serviceFee, tax, total };
+}
+
+function renderReceipt(tier, { code, status, note }) {
+  const now = new Date();
+  const { subtotal, serviceFee, tax, total } = getReceiptBreakdown(tier);
+
+  receiptId.textContent = code;
+  receiptDate.textContent = formatReceiptDate(now);
+  receiptStatus.textContent = status;
+  receiptItem.textContent = `${tier.title} cotton candy`;
+  receiptItemPrice.textContent = formatCurrency(subtotal);
+  receiptFee.textContent = formatCurrency(serviceFee);
+  receiptTax.textContent = formatCurrency(tax);
+  receiptTotal.textContent = formatCurrency(total);
+  receiptNote.textContent = note;
+}
+
 function showToast(message) {
   clearTimeout(state.toastTimer);
   toast.textContent = message;
@@ -184,16 +231,26 @@ function openModal() {
 
 function closeModal() {
   clearTimeout(state.processingTimer);
+  clearTimeout(state.confettiTimer);
   celebrationModal.classList.remove("is-open");
   celebrationModal.setAttribute("aria-hidden", "true");
   document.body.classList.remove("modal-open");
+  confettiOverlay.classList.remove("is-active");
+  confettiOverlay.textContent = "";
 }
 
 function clearConfettiZone() {
   confettiZone.textContent = "";
 }
 
+function clearConfettiOverlay() {
+  clearTimeout(state.confettiTimer);
+  confettiOverlay.classList.remove("is-active");
+  confettiOverlay.textContent = "";
+}
+
 function paintConfetti() {
+  clearConfettiOverlay();
   clearConfettiZone();
 
   if (prefersReducedMotion.matches) {
@@ -205,32 +262,49 @@ function paintConfetti() {
   }
 
   const colors = ["#49abed", "#82d3ff", "#1e74b6", "#fdcf74", "#ffffff"];
+  confettiOverlay.classList.add("is-active");
 
-  for (let i = 0; i < 48; i += 1) {
+  for (let i = 0; i < 140; i += 1) {
     const piece = document.createElement("span");
     piece.className = "confetti";
     piece.style.left = `${Math.random() * 100}%`;
+    piece.style.top = `${-(6 + Math.random() * 30)}vh`;
     piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-    piece.style.animationDuration = `${1.45 + Math.random() * 1.4}s`;
-    piece.style.animationDelay = `${Math.random() * 0.25}s`;
-    confettiZone.append(piece);
+    piece.style.animationDuration = `${1.55 + Math.random() * 1.8}s`;
+    piece.style.animationDelay = `${Math.random() * 0.35}s`;
+    piece.style.setProperty("--fall-distance", `${108 + Math.random() * 20}vh`);
+    piece.style.setProperty("--drift", `${(Math.random() - 0.5) * 24}vw`);
+    confettiOverlay.append(piece);
   }
+
+  state.confettiTimer = setTimeout(() => {
+    clearConfettiOverlay();
+  }, 3400);
 }
 
 function showProcessing(tier) {
   modalDone.hidden = true;
   modalTitle.textContent = "Spinning sugar machine...";
   modalMessage.textContent = `Whipping up a ${tier.title} cloud. Please enjoy this dramatic fake wait.`;
-  receiptCode.textContent = "Pretend payment handshake in progress...";
+  renderReceipt(tier, {
+    code: "Pending...",
+    status: "Authorizing...",
+    note: "Simulated checkout in progress. No real funds are moving."
+  });
   clearConfettiZone();
 }
 
 function showSuccess(tier) {
   const flavorMessage = nextFlavor("celebration");
+  const fauxReceiptCode = buildReceiptCode();
   modalDone.hidden = false;
   modalTitle.textContent = "Cotton candy acquired";
   modalMessage.textContent = `${flavorMessage}`;
-  receiptCode.textContent = `Faux receipt: ${buildReceiptCode()} | Tier: ${tier.title} (${tier.priceLabel})`;
+  renderReceipt(tier, {
+    code: fauxReceiptCode,
+    status: "Approved (simulated)",
+    note: "Parody receipt only. Your actual charge is $0.00."
+  });
   paintConfetti();
   showToast(`${tier.title} delivered. Zero dollars charged.`);
 }

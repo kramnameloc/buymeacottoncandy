@@ -15,12 +15,28 @@ A satirical, single-page parody of a support/tip site with a blue cotton-candy t
 - `public/styles.css` - theme, layout, responsive design, animation
 - `public/app.js` - data/content rendering and fake checkout interactions
 - `public/assets/` - custom SVG graphics
+- `scripts/run-local.sh` - one-command local static server
 - `public/CNAME` - custom domain value for GitHub Pages
 - `.github/workflows/pages.yml` - publish workflow
 
 ## Local preview
 
-From the repository root:
+From the repository root (recommended):
+
+```bash
+./scripts/run-local.sh
+```
+
+Then open `http://127.0.0.1:8080`.
+The script auto-uses `python3`, `python`, or `npx` (in that order).
+
+Optional overrides:
+
+```bash
+HOST=0.0.0.0 PORT=3000 ./scripts/run-local.sh
+```
+
+Manual fallback:
 
 ```bash
 python3 -m http.server 8080 --directory public
