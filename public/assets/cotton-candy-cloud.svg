@@ -1,0 +1,37 @@
+<svg width="760" height="520" viewBox="0 0 760 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="760" height="520" rx="36" fill="url(#bg)"/>
+  <circle cx="170" cy="120" r="72" fill="url(#orbA)"/>
+  <circle cx="640" cy="92" r="58" fill="url(#orbB)"/>
+  <circle cx="560" cy="436" r="70" fill="url(#orbC)"/>
+  <path d="M246 174C285 136 349 127 394 153C406 108 448 76 498 76C565 76 620 131 620 198C620 205 619 211 618 216C653 227 678 260 678 299C678 349 638 389 588 389H272C221 389 180 347 180 296C180 249 215 209 261 201C254 194 249 185 246 174Z" fill="url(#cloudMain)"/>
+  <path d="M370 396H428L448 454H350L370 396Z" fill="#B67A43"/>
+  <path d="M304 296C322 272 359 264 387 279C402 253 430 236 462 236C504 236 538 270 538 312C538 354 504 388 462 388H348C312 388 283 359 283 323C283 312 287 303 294 295C297 296 301 296 304 296Z" fill="url(#cloudInner)"/>
+  <path d="M104 390C164 346 240 360 278 420" stroke="#90C9EF" stroke-width="14" stroke-linecap="round"/>
+  <path d="M476 84C526 56 592 64 636 106" stroke="#9CD0F2" stroke-width="10" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="bg" x1="64" y1="32" x2="704" y2="496" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5FCFF"/>
+      <stop offset="1" stop-color="#D9EFFF"/>
+    </linearGradient>
+    <radialGradient id="orbA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(170 120) rotate(90) scale(72)">
+      <stop stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#B3DFFF" stop-opacity="0.35"/>
+    </radialGradient>
+    <radialGradient id="orbB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(640 92) rotate(90) scale(58)">
+      <stop stop-color="#FFFFFF" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#A1D6FB" stop-opacity="0.28"/>
+    </radialGradient>
+    <radialGradient id="orbC" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(560 436) rotate(90) scale(70)">
+      <stop stop-color="#FFFFFF" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#95CFF7" stop-opacity="0.3"/>
+    </radialGradient>
+    <linearGradient id="cloudMain" x1="216" y1="94" x2="676" y2="390" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#79C0F0"/>
+    </linearGradient>
+    <linearGradient id="cloudInner" x1="290" y1="244" x2="544" y2="390" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FCFFFF"/>
+      <stop offset="1" stop-color="#8CCAF2"/>
+    </linearGradient>
+  </defs>
+</svg>
