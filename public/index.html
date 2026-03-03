@@ -127,6 +127,7 @@
     </footer>
 
     <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+    <div id="confetti-overlay" class="confetti-overlay" aria-hidden="true"></div>
 
     <div
       id="celebration-modal"
@@ -143,8 +144,49 @@
         <p class="eyebrow">Pretend checkout</p>
         <h2 id="celebration-title">Spinning sugar machine...</h2>
         <p id="modal-message">Whipping up your cotton candy cloud.</p>
+        <section class="receipt-card" aria-live="polite" aria-label="Checkout receipt">
+          <header class="receipt-head">
+            <p class="receipt-merchant">Blue Cotton Candy Co.</p>
+            <p class="receipt-subtitle">Satirical checkout terminal</p>
+          </header>
+          <div class="receipt-meta">
+            <p><span>Receipt</span><strong id="receipt-id">Generating...</strong></p>
+            <p><span>Date</span><strong id="receipt-date">Pending...</strong></p>
+            <p><span>Status</span><strong id="receipt-status">Authorizing...</strong></p>
+          </div>
+          <table class="receipt-lines">
+            <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="receipt-item">Cotton candy tier</td>
+                <td id="receipt-item-price">$0.00</td>
+              </tr>
+              <tr>
+                <td>Service fee</td>
+                <td id="receipt-fee">$0.00</td>
+              </tr>
+              <tr>
+                <td>Sales tax (simulated)</td>
+                <td id="receipt-tax">$0.00</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th scope="row">Total</th>
+                <td id="receipt-total">$0.00</td>
+              </tr>
+            </tfoot>
+          </table>
+          <p class="receipt-note" id="receipt-note">
+            No real payment is processed. This receipt is for parody purposes only.
+          </p>
+        </section>
         <div id="confetti-zone" class="confetti-zone" aria-hidden="true"></div>
-        <p id="receipt-code" class="receipt-code"></p>
         <button id="modal-done" class="button button-small" type="button">Do it again</button>
       </div>
     </div>

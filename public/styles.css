@@ -423,6 +423,20 @@ h3 {
   transform: translateY(0);
 }
 
+.confetti-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.confetti-overlay.is-active {
+  opacity: 1;
+}
+
 .celebration-modal {
   position: fixed;
   inset: 0;
@@ -474,27 +488,126 @@ h3 {
   margin-top: 1rem;
 }
 
-.receipt-code {
-  font-family: "Courier New", monospace;
-  font-size: 0.9rem;
-  margin: 0.9rem 0 0;
-  color: var(--ink-700);
+.receipt-card {
+  margin-top: 0.95rem;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid #b3d8f1;
+  background: linear-gradient(180deg, #ffffff, #f4faff);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+}
+
+.receipt-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px dashed #9bc9ea;
+}
+
+.receipt-merchant {
+  margin: 0;
+  font-weight: 800;
   letter-spacing: 0.02em;
 }
 
+.receipt-subtitle {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ink-700);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.receipt-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 0.8rem;
+}
+
+.receipt-meta p {
+  margin: 0;
+  display: grid;
+  gap: 0.12rem;
+}
+
+.receipt-meta span {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-700);
+}
+
+.receipt-meta strong {
+  font-family: "Courier New", monospace;
+  font-size: 0.84rem;
+}
+
+.receipt-lines {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+}
+
+.receipt-lines th,
+.receipt-lines td {
+  text-align: left;
+  padding: 0.45rem 0.1rem;
+  border-bottom: 1px dashed #c5e1f6;
+}
+
+.receipt-lines th:last-child,
+.receipt-lines td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.receipt-lines thead th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-700);
+}
+
+.receipt-lines tfoot th,
+.receipt-lines tfoot td {
+  font-weight: 800;
+  border-bottom: 0;
+  padding-top: 0.7rem;
+}
+
+.receipt-note {
+  margin: 0.78rem 0 0;
+  font-size: 0.82rem;
+  color: var(--ink-700);
+  border-top: 1px dashed #b2d8f0;
+  padding-top: 0.6rem;
+}
+
 .confetti-zone {
-  position: relative;
-  height: 170px;
-  margin-top: 0.85rem;
-  border-radius: 14px;
-  background: linear-gradient(180deg, rgba(214, 237, 255, 0.45), rgba(255, 255, 255, 0.3));
-  border: 1px dashed #97c9ef;
-  overflow: hidden;
+  margin-top: 0.75rem;
+}
+
+.confetti-zone:empty {
+  display: none;
+}
+
+.confetti-zone .micro-disclaimer {
+  margin: 0;
+  font-size: 0.83rem;
+  color: var(--ink-700);
+  border: 1px dashed #9fcaea;
+  border-radius: 10px;
+  background: #f7fcff;
+  padding: 0.55rem 0.65rem;
 }
 
 .confetti {
   position: absolute;
-  top: -18px;
+  top: -12vh;
   width: 9px;
   height: 14px;
   border-radius: 2px;
@@ -503,12 +616,12 @@ h3 {
 
 @keyframes confetti-fall {
   0% {
-    transform: translateY(0) rotate(0deg);
+    transform: translate3d(0, 0, 0) rotate(0deg);
     opacity: 1;
   }
 
   100% {
-    transform: translateY(210px) rotate(500deg);
+    transform: translate3d(var(--drift, 0), var(--fall-distance, 110vh), 0) rotate(680deg);
     opacity: 0;
   }
 }
@@ -547,6 +660,18 @@ body.modal-open {
 
   .modal-panel {
     padding: 1.1rem;
+  }
+
+  .receipt-head {
+    display: block;
+  }
+
+  .receipt-subtitle {
+    margin-top: 0.2rem;
+  }
+
+  .receipt-meta {
+    grid-template-columns: 1fr;
   }
 }
 
