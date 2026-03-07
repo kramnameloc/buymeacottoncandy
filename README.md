@@ -1,65 +1,58 @@
 # Buy Me a Cotton Candy
 
-A satirical, single-page parody of a support/tip site with a blue cotton-candy theme.
+A satirical, SEO-first static website that parodies creator support pages with fake checkout humor.
 
-## What this is
+## Highlights
 
-- Static HTML, CSS, and JavaScript (no backend)
-- Playful fake purchase flow (no real payments)
-- Accessible and responsive single-page UX
-- GitHub Pages deployment via GitHub Actions
+- Astro-powered static output for GitHub Pages
+- Crawlable pages for `/`, `/tiers/`, `/faq/`, and `/flavors/`
+- Canonical, Open Graph, Twitter Card, and JSON-LD metadata
+- Shareable URL state using query params:
+  - `tier=mini-puff|blue-whirl|galaxy-fluff`
+  - `flavor=<flavor-slug>`
+  - `theme=sky|sunset|carnival`
+  - `receipt=<receipt-code>`
+- Flavor Persona generator with deterministic shareable seeds
+- Theme presets + custom tagline persisted in `localStorage`
+- Daily absurd flavor generated from a date seed
 
 ## Project structure
 
-- `public/index.html` - main page markup
-- `public/styles.css` - theme, layout, responsive design, animation
-- `public/app.js` - data/content rendering and fake checkout interactions
-- `public/assets/` - custom SVG graphics
-- `scripts/run-local.sh` - one-command local static server
-- `public/CNAME` - custom domain value for GitHub Pages
-- `.github/workflows/pages.yml` - publish workflow
+- `src/pages/` - Astro routes and page content
+- `src/layouts/BaseLayout.astro` - shared SEO/meta layout
+- `src/styles/site.css` - global styles and theme variables
+- `src/scripts/site-app.ts` - client interactions and share flows
+- `src/lib/` - typed content, URL state, persona, and daily flavor logic
+- `tests/` - unit and integration tests
+- `public/` - static assets (`CNAME`, images, `robots.txt`, `sitemap.xml`)
+- `scripts/validate-dist-seo.mjs` - build artifact SEO validation
 
-## Local preview
-
-From the repository root (recommended):
-
-```bash
-./scripts/run-local.sh
-```
-
-Then open `http://127.0.0.1:8080`.
-The script auto-uses `python3`, `python`, or `npx` (in that order).
-
-Optional overrides:
+## Local development
 
 ```bash
-HOST=0.0.0.0 PORT=3000 ./scripts/run-local.sh
+npm install
+npm run dev
 ```
 
-Manual fallback:
+Then open [http://localhost:4321](http://localhost:4321).
+
+## Build and test
 
 ```bash
-python3 -m http.server 8080 --directory public
+npm run build
+npm run test
+npm run test:seo
 ```
-
-Then open `http://localhost:8080`.
 
 ## GitHub Pages deployment
 
-1. Push this repository to GitHub.
-2. In repository settings, open **Pages**.
-3. Set source to **GitHub Actions**.
-4. Ensure workflow file `.github/workflows/pages.yml` is present on `main`.
-5. Push to `main` (or run the workflow manually).
+The workflow at `.github/workflows/pages.yml`:
 
-## Custom domain checklist
+1. Installs dependencies
+2. Builds Astro output to `dist/`
+3. Validates SEO artifacts (canonical/meta/JSON-LD + sitemap + robots)
+4. Deploys `dist/` to GitHub Pages
 
-1. Update `public/CNAME` from `your-domain.example` to your real domain.
-2. Configure DNS:
-- For subdomain: `CNAME` to `<username>.github.io`.
-- For apex/root: `ALIAS/ANAME` (or provider-equivalent) to GitHub Pages targets.
-3. In GitHub Pages settings, confirm the custom domain and enable HTTPS.
+## Satire note
 
-## Satire and parody note
-
-This project is made for humor and UI experimentation. It is not affiliated with payment brands and does not process real transactions.
+This project is parody and UI experimentation only. It does not process real payments or collect payment credentials.

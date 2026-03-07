@@ -1,0 +1,302 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  DEFAULT_TAGLINE,
+  FAQ_ITEMS,
+  FLAVORS,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  TESTIMONIALS,
+  THEMES,
+  TIERS
+} from "../lib/site-content";
+import { formatDailyFlavorDate, getDailyFlavor } from "../lib/daily-flavor";
+import siteAppScript from "../scripts/site-app.ts?url";
+
+const dailyFlavor = getDailyFlavor(new Date());
+const dailyFlavorDate = formatDailyFlavorDate(new Date());
+---
+
+<BaseLayout
+  title={SITE_NAME}
+  description={SITE_DESCRIPTION}
+  path="/"
+  faqItems={FAQ_ITEMS}
+>
+  <section class="hero section container">
+    <div class="hero-copy">
+      <p class="eyebrow">100% imaginary sugar support</p>
+      <h1>Buy me a cotton candy and fund my top-tier nonsense.</h1>
+      <p class="hero-text">
+        This is a parody tip page for jokes, vibes, and fluffy clouds. No real payments happen.
+        You click, we celebrate, everyone wins.
+      </p>
+      <div class="hero-actions">
+        <button id="hero-cta" class="button" type="button">Buy me a cotton candy</button>
+        <p id="tagline-display" class="micro-disclaimer">{DEFAULT_TAGLINE}</p>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <img src="/assets/cotton-candy.png" alt="" />
+    </div>
+  </section>
+
+  <section class="section container" id="tiers">
+    <div class="section-heading">
+      <p class="eyebrow">Choose your candy level</p>
+      <h2>Support tiers made of pure satire</h2>
+    </div>
+    <div class="tier-grid" id="tier-grid">
+      {TIERS.map((tier) => (
+        <article class="tier-card" data-tier-card={tier.id}>
+          <h3>{tier.title}</h3>
+          <p class="tier-price">{tier.priceLabel}</p>
+          <p class="tier-joke">{tier.joke}</p>
+          <button class="button button-small tier-cta" type="button" data-tier-id={tier.id}>
+            {tier.ctaLabel}
+          </button>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section-alt" id="flavor-section">
+    <div class="container">
+      <div class="section-heading">
+        <p class="eyebrow">Flavor wall</p>
+        <h2>Fresh messages from the sugar cloud</h2>
+      </div>
+      <div class="flavor-wall-wrap">
+        <p id="flavor-wall" data-default-flavor={FLAVORS[0].slug} aria-live="polite">
+          "{FLAVORS[0].message}"
+        </p>
+        <div class="inline-actions">
+          <button class="text-button" id="flavor-refresh" type="button">Shuffle flavor note</button>
+          <button class="text-button" id="share-current-flavor" type="button">Share this flavor</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container" id="daily-flavor-section">
+    <div class="section-heading">
+      <p class="eyebrow">Daily absurd flavor</p>
+      <h2>Today&rsquo;s featured sugar prophecy</h2>
+    </div>
+    <article class="daily-flavor-card">
+      <p class="daily-date" id="daily-flavor-date">{dailyFlavorDate}</p>
+      <p class="daily-message" id="daily-flavor-message" data-flavor-slug={dailyFlavor.slug}>
+        {dailyFlavor.message}
+      </p>
+      <p class="micro-disclaimer">
+        Rotates every day from a deterministic date seed so everyone gets the same daily flavor.
+      </p>
+    </article>
+  </section>
+
+  <section class="section section-alt" id="share-hub">
+    <div class="container">
+      <div class="section-heading">
+        <p class="eyebrow">Shareability</p>
+        <h2>Launch this nonsense into the group chat</h2>
+      </div>
+      <div class="share-grid">
+        <button id="share-site" class="button button-small" type="button">Share site</button>
+        <button id="copy-share-link" class="button button-small button-outline" type="button">Copy share link</button>
+        <a id="share-x" class="share-link" href="#" target="_blank" rel="noopener noreferrer">Share on X</a>
+        <a
+          id="share-linkedin"
+          class="share-link"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Share on LinkedIn</a>
+        <a id="share-facebook" class="share-link" href="#" target="_blank" rel="noopener noreferrer"
+          >Share on Facebook</a
+        >
+      </div>
+    </div>
+  </section>
+
+  <section class="section container" id="customize">
+    <div class="section-heading">
+      <p class="eyebrow">Custom options</p>
+      <h2>Pick your flavor theme and tagline</h2>
+    </div>
+    <div class="custom-card">
+      <div class="theme-picker" id="theme-picker" role="radiogroup" aria-label="Theme presets">
+        {THEMES.map((theme) => (
+          <button
+            class="theme-chip"
+            type="button"
+            role="radio"
+            aria-checked="false"
+            data-theme-id={theme.id}
+            title={theme.description}
+          >
+            {theme.label}
+          </button>
+        ))}
+      </div>
+      <label class="field-label" for="custom-tagline">Custom tagline</label>
+      <div class="tagline-row">
+        <input
+          id="custom-tagline"
+          class="tagline-input"
+          type="text"
+          maxlength="120"
+          placeholder="Type your own parody tagline"
+        />
+        <button id="save-tagline" class="button button-small" type="button">Save</button>
+        <button id="reset-customization" class="button button-small button-outline" type="button">Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="persona-section">
+    <div class="container">
+      <div class="section-heading">
+        <p class="eyebrow">Humor mode</p>
+        <h2>Generate your Flavor Persona</h2>
+      </div>
+      <div class="persona-card">
+        <label class="field-label" for="persona-input">Enter any nickname to seed your persona</label>
+        <div class="tagline-row">
+          <input id="persona-input" class="tagline-input" type="text" maxlength="80" placeholder="Captain Swirl" />
+          <button id="persona-generate" class="button button-small" type="button">Generate persona</button>
+        </div>
+        <div id="persona-result" class="persona-result" hidden>
+          <h3 id="persona-title"></h3>
+          <p id="persona-tagline"></p>
+          <p id="persona-flavor" class="micro-disclaimer"></p>
+          <button id="persona-share" class="button button-small" type="button">Share persona</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container" id="how-it-works">
+    <div class="section-heading">
+      <p class="eyebrow">How this nonsense works</p>
+      <h2>Three easy and totally fake steps</h2>
+    </div>
+    <ol class="steps-grid">
+      <li>
+        <h3>Pick a candy tier</h3>
+        <p>Choose the amount of pretend sugar support you want to send.</p>
+      </li>
+      <li>
+        <h3>Watch the machine spin</h3>
+        <p>A dramatic fake processing moment builds anticipation.</p>
+      </li>
+      <li>
+        <h3>Receive your faux receipt</h3>
+        <p>You get confetti, a flavor note, and immediate bragging rights.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="section container" id="testimonials">
+    <div class="section-heading">
+      <p class="eyebrow">Sugar squad</p>
+      <h2>Recent supporters (allegedly)</h2>
+    </div>
+    <div class="testimonial-grid">
+      {TESTIMONIALS.map((entry) => (
+        <article class="testimonial-card">
+          <p>&quot;{entry.text}&quot;</p>
+          <span>{entry.name}</span>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section-alt" id="faq">
+    <div class="container">
+      <div class="section-heading">
+        <p class="eyebrow">FAQ</p>
+        <h2>Important fake business details</h2>
+      </div>
+      <div class="faq-list">
+        {FAQ_ITEMS.map((item) => (
+          <details class="faq-item">
+            <summary>{item.q}</summary>
+            <p>{item.a}</p>
+          </details>
+        ))}
+      </div>
+      <p class="block-disclaimer">
+        This website is a satire project inspired by internet tip pages. It is not affiliated with any payment
+        brand and does not collect real funds.
+      </p>
+    </div>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div id="confetti-overlay" class="confetti-overlay" aria-hidden="true"></div>
+
+  <div
+    id="celebration-modal"
+    class="celebration-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-labelledby="celebration-title"
+  >
+    <div class="modal-panel" tabindex="-1">
+      <button id="modal-close" class="icon-button" type="button" aria-label="Close celebration dialog">Close</button>
+      <p class="eyebrow">Pretend checkout</p>
+      <h2 id="celebration-title">Spinning sugar machine...</h2>
+      <p id="modal-message">Whipping up your cotton candy cloud.</p>
+      <section class="receipt-card" aria-live="polite" aria-label="Checkout receipt">
+        <header class="receipt-head">
+          <p class="receipt-merchant">Blue Cotton Candy Co.</p>
+          <p class="receipt-subtitle">Satirical checkout terminal</p>
+        </header>
+        <div class="receipt-meta">
+          <p><span>Receipt</span><strong id="receipt-id">Generating...</strong></p>
+          <p><span>Date</span><strong id="receipt-date">Pending...</strong></p>
+          <p><span>Status</span><strong id="receipt-status">Authorizing...</strong></p>
+        </div>
+        <table class="receipt-lines">
+          <thead>
+            <tr>
+              <th scope="col">Item</th>
+              <th scope="col">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="receipt-item">Cotton candy tier</td>
+              <td id="receipt-item-price">$0.00</td>
+            </tr>
+            <tr>
+              <td>Service fee</td>
+              <td id="receipt-fee">$0.00</td>
+            </tr>
+            <tr>
+              <td>Sales tax (simulated)</td>
+              <td id="receipt-tax">$0.00</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row">Total</th>
+              <td id="receipt-total">$0.00</td>
+            </tr>
+          </tfoot>
+        </table>
+        <p class="receipt-note" id="receipt-note">
+          No real payment is processed. This receipt is for parody purposes only.
+        </p>
+      </section>
+      <div id="confetti-zone" class="confetti-zone" aria-hidden="true"></div>
+      <div class="inline-actions receipt-actions">
+        <button id="receipt-share" class="button button-small" type="button">Share this receipt</button>
+        <button id="modal-done" class="button button-small button-outline" type="button">Do it again</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src={siteAppScript}></script>
+</BaseLayout>

@@ -34,4 +34,11 @@ Temporary Items
 # iCloud generated files
 *.icloud
 
+# Node / Astro
+node_modules/
+dist/
+.astro/
+.vscode/
+coverage/
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,web

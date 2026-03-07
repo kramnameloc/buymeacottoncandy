@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatDailyFlavorDate, getDailyFlavor } from "../../lib/daily-flavor";
+import { FLAVORS, SITE_NAME } from "../../lib/site-content";
+
+const todayFlavor = getDailyFlavor(new Date());
+const todayLabel = formatDailyFlavorDate(new Date());
+---
+
+<BaseLayout
+  title={`Flavor Wall | ${SITE_NAME}`}
+  description="Explore every cotton-candy flavor note and today’s date-seeded absurd flavor."
+  path="/flavors/"
+>
+  <section class="section container">
+    <div class="section-heading">
+      <p class="eyebrow">Flavor index</p>
+      <h1>All sugar cloud messages</h1>
+      <p class="hero-text">These lines power the rotating flavor wall and shareable URL states.</p>
+    </div>
+
+    <article class="daily-flavor-card">
+      <h2>Today&rsquo;s absurd flavor</h2>
+      <p class="daily-date">{todayLabel}</p>
+      <p class="daily-message">{todayFlavor.message}</p>
+      <a class="button button-small" href={`/?flavor=${todayFlavor.slug}#flavor-section`}>
+        Open this flavor on homepage
+      </a>
+    </article>
+
+    <ul class="flavor-list">
+      {FLAVORS.map((flavor) => (
+        <li>
+          <article class="tier-card">
+            <h2>{flavor.slug.replaceAll("-", " ")}</h2>
+            <p class="tier-joke">{flavor.message}</p>
+            <a class="text-button" href={`/?flavor=${flavor.slug}#flavor-section`}>
+              Use this flavor in share URL
+            </a>
+          </article>
+        </li>
+      ))}
+    </ul>
+
+    <p class="page-back-link"><a href="/">Back to homepage</a></p>
+  </section>
+</BaseLayout>
