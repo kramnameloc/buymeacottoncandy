@@ -36,8 +36,7 @@ describe("share link integration", () => {
       tier: "galaxy-fluff",
       flavor: "premium-altitude",
       theme: "sunset",
-      receipt: "CANDY-20260307-A1B2C3",
-      persona: undefined
+      receipt: "CANDY-20260307-A1B2C3"
     });
   });
 });

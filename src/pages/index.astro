@@ -72,7 +72,6 @@ const dailyFlavorDate = formatDailyFlavorDate(new Date());
         </p>
         <div class="inline-actions">
           <button class="text-button" id="flavor-refresh" type="button">Shuffle flavor note</button>
-          <button class="text-button" id="share-current-flavor" type="button">Share this flavor</button>
         </div>
       </div>
     </div>
@@ -149,28 +148,6 @@ const dailyFlavorDate = formatDailyFlavorDate(new Date());
         />
         <button id="save-tagline" class="button button-small" type="button">Save</button>
         <button id="reset-customization" class="button button-small button-outline" type="button">Reset</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section-alt" id="persona-section">
-    <div class="container">
-      <div class="section-heading">
-        <p class="eyebrow">Humor mode</p>
-        <h2>Generate your Flavor Persona</h2>
-      </div>
-      <div class="persona-card">
-        <label class="field-label" for="persona-input">Enter any nickname to seed your persona</label>
-        <div class="tagline-row">
-          <input id="persona-input" class="tagline-input" type="text" maxlength="80" placeholder="Captain Swirl" />
-          <button id="persona-generate" class="button button-small" type="button">Generate persona</button>
-        </div>
-        <div id="persona-result" class="persona-result" hidden>
-          <h3 id="persona-title"></h3>
-          <p id="persona-tagline"></p>
-          <p id="persona-flavor" class="micro-disclaimer"></p>
-          <button id="persona-share" class="button button-small" type="button">Share persona</button>
-        </div>
       </div>
     </div>
   </section>

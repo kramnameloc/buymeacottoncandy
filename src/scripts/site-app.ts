@@ -1,5 +1,4 @@
 import { formatDailyFlavorDate, getDailyFlavor } from "../lib/daily-flavor";
-import { personaFromInput, personaFromSeed, type FlavorPersona } from "../lib/persona";
 import { applyStateFromUrl, buildShareUrl, type ShareState } from "../lib/share-state";
 import {
   DEFAULT_TAGLINE,
@@ -49,7 +48,6 @@ const heroCta = requireElementById<HTMLButtonElement>("hero-cta");
 const tierGrid = requireElementById<HTMLDivElement>("tier-grid");
 const flavorWall = requireElementById<HTMLParagraphElement>("flavor-wall");
 const flavorRefresh = requireElementById<HTMLButtonElement>("flavor-refresh");
-const shareCurrentFlavor = requireElementById<HTMLButtonElement>("share-current-flavor");
 const toast = requireElementById<HTMLDivElement>("toast");
 const confettiOverlay = requireElementById<HTMLDivElement>("confetti-overlay");
 const shareSite = requireElementById<HTMLButtonElement>("share-site");
@@ -64,14 +62,6 @@ const resetCustomization = requireElementById<HTMLButtonElement>("reset-customiz
 const taglineDisplay = requireElementById<HTMLParagraphElement>("tagline-display");
 const dailyFlavorDate = requireElementById<HTMLParagraphElement>("daily-flavor-date");
 const dailyFlavorMessage = requireElementById<HTMLParagraphElement>("daily-flavor-message");
-
-const personaInput = requireElementById<HTMLInputElement>("persona-input");
-const personaGenerate = requireElementById<HTMLButtonElement>("persona-generate");
-const personaResult = requireElementById<HTMLDivElement>("persona-result");
-const personaTitle = requireElementById<HTMLHeadingElement>("persona-title");
-const personaTagline = requireElementById<HTMLParagraphElement>("persona-tagline");
-const personaFlavor = requireElementById<HTMLParagraphElement>("persona-flavor");
-const personaShare = requireElementById<HTMLButtonElement>("persona-share");
 
 const celebrationModal = requireElementById<HTMLDivElement>("celebration-modal");
 const modalPanel = requireChildElement<HTMLDivElement>(celebrationModal, ".modal-panel");
@@ -90,20 +80,49 @@ const receiptTax = requireElementById<HTMLElement>("receipt-tax");
 const receiptTotal = requireElementById<HTMLElement>("receipt-total");
 const receiptNote = requireElementById<HTMLElement>("receipt-note");
 const confettiZone = requireElementById<HTMLDivElement>("confetti-zone");
+const themeColorMeta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
 
 const state = {
   wallFlavorSlug: FLAVORS[0].slug,
   celebrationFlavorSlug: FLAVORS[0].slug,
   activeTierId: TIERS[0].id,
   activeTheme: DEFAULT_THEME,
-  activePersonaSeed: undefined as string | undefined,
   lastReceiptCode: undefined as string | undefined,
   isApplyingUrlState: false,
   processingTimer: null as number | null,
   confettiTimer: null as number | null,
-  toastTimer: null as number | null,
-  flavorTickerTimer: null as number | null
+  toastTimer: null as number | null
 };
+
+const THEME_COLORS: Record<ThemeId, string> = {
+  sky: "#49abed",
+  sunset: "#f2679f",
+  carnival: "#39c46a"
+};
+
+function readStorage(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeStorage(key: string, value: string): void {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Ignore blocked storage environments.
+  }
+}
+
+function removeStorage(key: string): void {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Ignore blocked storage environments.
+  }
+}
 
 function currentPageBaseUrl(): string {
   return `${window.location.origin}${window.location.pathname}`;
@@ -122,21 +141,20 @@ function pickNextFlavor(previousSlug: string): FlavorEntry {
   return candidate;
 }
 
-function getShareState(options: { includeReceipt?: boolean; includePersona?: boolean } = {}): ShareState {
+function getShareState(options: { includeReceipt?: boolean } = {}): ShareState {
   return {
     tier: state.activeTierId,
     flavor: state.wallFlavorSlug,
     theme: state.activeTheme,
-    receipt: options.includeReceipt ? state.lastReceiptCode : undefined,
-    persona: options.includePersona ? state.activePersonaSeed : undefined
+    receipt: options.includeReceipt ? state.lastReceiptCode : undefined
   };
 }
 
-function buildCurrentShareUrl(options: { includeReceipt?: boolean; includePersona?: boolean } = {}): string {
+function buildCurrentShareUrl(options: { includeReceipt?: boolean } = {}): string {
   return buildShareUrl(getShareState(options), currentPageBaseUrl());
 }
 
-function syncUrl(options: { includeReceipt?: boolean; includePersona?: boolean } = {}): void {
+function syncUrl(options: { includeReceipt?: boolean } = {}): void {
   const url = new URL(buildCurrentShareUrl(options));
   const pathAndSearch = `${url.pathname}${url.search}`;
   window.history.replaceState({}, "", pathAndSearch);
@@ -210,6 +228,9 @@ function rotateFlavorWall(manual = false): void {
 function applyTheme(theme: ThemeId, persist = true): void {
   state.activeTheme = theme;
   document.documentElement.dataset.theme = theme;
+  if (themeColorMeta) {
+    themeColorMeta.content = THEME_COLORS[theme];
+  }
 
   const buttons = themePicker.querySelectorAll<HTMLButtonElement>("[data-theme-id]");
   buttons.forEach((button) => {
@@ -218,7 +239,7 @@ function applyTheme(theme: ThemeId, persist = true): void {
   });
 
   if (persist) {
-    localStorage.setItem(STORAGE_THEME_KEY, theme);
+    writeStorage(STORAGE_THEME_KEY, theme);
   }
 
   updateShareTargets();
@@ -232,22 +253,22 @@ function setTagline(value: string, persist = true): void {
 
   if (persist) {
     if (tagline === DEFAULT_TAGLINE) {
-      localStorage.removeItem(STORAGE_TAGLINE_KEY);
+      removeStorage(STORAGE_TAGLINE_KEY);
     } else {
-      localStorage.setItem(STORAGE_TAGLINE_KEY, tagline);
+      writeStorage(STORAGE_TAGLINE_KEY, tagline);
     }
   }
 }
 
 function loadStoredCustomization(): void {
-  const storedTheme = localStorage.getItem(STORAGE_THEME_KEY);
+  const storedTheme = readStorage(STORAGE_THEME_KEY);
   if (isThemeId(storedTheme)) {
     applyTheme(storedTheme, false);
   } else {
     applyTheme(DEFAULT_THEME, false);
   }
 
-  const storedTagline = localStorage.getItem(STORAGE_TAGLINE_KEY) ?? DEFAULT_TAGLINE;
+  const storedTagline = readStorage(STORAGE_TAGLINE_KEY) ?? DEFAULT_TAGLINE;
   setTagline(storedTagline, false);
 }
 
@@ -445,14 +466,6 @@ async function shareLink(url: string, title: string, text: string): Promise<void
   showToast(copied ? "Share link copied." : "Copy failed. Use the social buttons below.");
 }
 
-function renderPersona(persona: FlavorPersona): void {
-  state.activePersonaSeed = persona.seed;
-  personaResult.hidden = false;
-  personaTitle.textContent = persona.title;
-  personaTagline.textContent = persona.tagline;
-  personaFlavor.textContent = `Flavor badge: ${persona.flavorBadge}`;
-}
-
 function updateDailyFlavorSection(): void {
   const flavor = getDailyFlavor(new Date());
   dailyFlavorDate.textContent = formatDailyFlavorDate(new Date());
@@ -480,10 +493,6 @@ function applyUrlState(): void {
     setFlavorBySlug(flavorWall.dataset.defaultFlavor);
   }
 
-  if (urlState.persona) {
-    renderPersona(personaFromSeed(urlState.persona));
-  }
-
   if (urlState.receipt) {
     triggerCottonCandyMoment(state.activeTierId, {
       immediateSuccess: true,
@@ -492,10 +501,7 @@ function applyUrlState(): void {
   }
 
   state.isApplyingUrlState = false;
-  syncUrl({
-    includeReceipt: Boolean(urlState.receipt),
-    includePersona: Boolean(urlState.persona)
-  });
+  syncUrl({ includeReceipt: Boolean(urlState.receipt) });
 }
 
 function setupEvents(): void {
@@ -512,11 +518,6 @@ function setupEvents(): void {
   });
 
   flavorRefresh.addEventListener("click", () => rotateFlavorWall(true));
-
-  shareCurrentFlavor.addEventListener("click", async () => {
-    const url = buildCurrentShareUrl();
-    await shareLink(url, "Flavor wall", "This flavor note deserves public attention.");
-  });
 
   shareSite.addEventListener("click", async () => {
     const url = buildCurrentShareUrl();
@@ -562,28 +563,6 @@ function setupEvents(): void {
     showToast("Theme and tagline reset.");
   });
 
-  personaGenerate.addEventListener("click", () => {
-    const persona = personaFromInput(personaInput.value);
-    if (!persona) {
-      showToast("Enter a nickname first.");
-      return;
-    }
-
-    renderPersona(persona);
-    syncUrl({ includePersona: true });
-    showToast("Flavor Persona generated.");
-  });
-
-  personaShare.addEventListener("click", async () => {
-    if (!state.activePersonaSeed) {
-      showToast("Generate a persona first.");
-      return;
-    }
-
-    const url = buildCurrentShareUrl({ includePersona: true });
-    await shareLink(url, "Flavor Persona", "I just rolled a flavor persona. Rate the title.");
-  });
-
   modalClose.addEventListener("click", closeModal);
   modalDone.addEventListener("click", () => triggerCottonCandyMoment(state.activeTierId));
 
@@ -616,10 +595,6 @@ function initialize(): void {
   applyUrlState();
   setupEvents();
   updateShareTargets();
-
-  state.flavorTickerTimer = window.setInterval(() => {
-    rotateFlavorWall(false);
-  }, 7000);
 }
 
 initialize();

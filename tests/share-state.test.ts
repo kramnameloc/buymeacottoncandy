@@ -19,8 +19,7 @@ describe("share state URL contract", () => {
       tier: "blue-whirl",
       flavor: "sea-salt-sky",
       theme: "sunset",
-      receipt: "CANDY-20260307-AB12CD",
-      persona: undefined
+      receipt: "CANDY-20260307-AB12CD"
     });
   });
 
@@ -32,8 +31,7 @@ describe("share state URL contract", () => {
       tier: undefined,
       flavor: undefined,
       theme: undefined,
-      receipt: undefined,
-      persona: undefined
+      receipt: undefined
     });
   });
 });

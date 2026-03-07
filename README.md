@@ -12,7 +12,6 @@ A satirical, SEO-first static website that parodies creator support pages with f
   - `flavor=<flavor-slug>`
   - `theme=sky|sunset|carnival`
   - `receipt=<receipt-code>`
-- Flavor Persona generator with deterministic shareable seeds
 - Theme presets + custom tagline persisted in `localStorage`
 - Daily absurd flavor generated from a date seed
 
@@ -22,7 +21,7 @@ A satirical, SEO-first static website that parodies creator support pages with f
 - `src/layouts/BaseLayout.astro` - shared SEO/meta layout
 - `src/styles/site.css` - global styles and theme variables
 - `src/scripts/site-app.ts` - client interactions and share flows
-- `src/lib/` - typed content, URL state, persona, and daily flavor logic
+- `src/lib/` - typed content, URL state, and daily flavor logic
 - `tests/` - unit and integration tests
 - `public/` - static assets (`CNAME`, images, `robots.txt`, `sitemap.xml`)
 - `scripts/validate-dist-seo.mjs` - build artifact SEO validation
@@ -43,6 +42,10 @@ npm run build
 npm run test
 npm run test:seo
 ```
+
+## Image assets in use
+
+- `public/assets/cotton-candy.png` is the primary brand image and default social share preview.
 
 ## GitHub Pages deployment
 
