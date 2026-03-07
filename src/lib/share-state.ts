@@ -7,7 +7,7 @@ export interface ShareState {
   receipt?: string;
 }
 
-const RECEIPT_CODE_REGEX = /^[A-Z0-9-]{5,40}$/;
+const RECEIPT_CODE_REGEX = /^CANDY-\d{8}-[A-Z0-9]{6}$/;
 
 function normalizeReceiptCode(value: string | null): string | undefined {
   if (!value) {

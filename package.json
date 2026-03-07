@@ -11,10 +11,10 @@
     "test:seo": "npm run build && node scripts/validate-dist-seo.mjs"
   },
   "dependencies": {
-    "astro": "^5.4.0"
+    "astro": "^5.18.0"
   },
   "devDependencies": {
-    "typescript": "^5.8.2",
-    "vitest": "^3.0.8"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }
