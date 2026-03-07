@@ -1,0 +1,100 @@
+---
+import { BASE_URL, SITE_DESCRIPTION, SITE_NAME, type FaqItem } from "../lib/site-content";
+import { buildCanonical, buildFaqSchema, buildWebPageSchema, buildWebsiteSchema } from "../lib/seo";
+import "../styles/site.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  path: string;
+  faqItems?: FaqItem[];
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = SITE_DESCRIPTION,
+  path,
+  faqItems = [],
+  ogImage = "/assets/cotton-candy.png"
+} = Astro.props;
+
+const canonical = buildCanonical(path);
+const ogImageUrl = new URL(ogImage, BASE_URL).toString();
+const websiteSchema = buildWebsiteSchema();
+const webPageSchema = buildWebPageSchema({ title, description, path });
+const faqSchema = faqItems.length > 0 ? buildFaqSchema(faqItems) : null;
+---
+
+<!doctype html>
+<html lang="en" data-theme="sky">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#49abed" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/assets/cotton-candy.png" type="image/png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)}></script>
+    <script type="application/ld+json" set:html={JSON.stringify(webPageSchema)}></script>
+    {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>}
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <div class="background-bubbles" aria-hidden="true">
+      <span class="bubble bubble-a"></span>
+      <span class="bubble bubble-b"></span>
+      <span class="bubble bubble-c"></span>
+      <span class="bubble bubble-d"></span>
+    </div>
+
+    <header class="site-header" id="top">
+      <nav class="top-nav container" aria-label="Main">
+        <a class="brand" href="/">
+          <img src="/assets/cotton-candy.png" alt="" aria-hidden="true" />
+          <span>{SITE_NAME}</span>
+        </a>
+        <ul class="top-links">
+          <li><a href="/tiers/">Tiers</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/flavors/">Flavors</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <p>Built for laughs, gradients, and blue cotton candy energy.</p>
+        <p>
+          View source on
+          <a href="https://github.com/markcoleman/buymeacottoncandy">GitHub</a>
+        </p>
+      </div>
+      <div class="container footer-disclaimer">
+        <p>
+          This project is parody. No real payments are processed and no payment credentials are collected.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { FAQ_ITEMS, SITE_NAME } from "../../lib/site-content";
+---
+
+<BaseLayout
+  title={`FAQ | ${SITE_NAME}`}
+  description="Frequently asked questions about this satirical cotton-candy support project."
+  path="/faq/"
+  faqItems={FAQ_ITEMS}
+>
+  <section class="section container">
+    <div class="section-heading">
+      <p class="eyebrow">Frequently asked questions</p>
+      <h1>Important fake business details</h1>
+      <p class="hero-text">Real answers about the fake checkout experience.</p>
+    </div>
+
+    <div class="faq-list">
+      {FAQ_ITEMS.map((entry) => (
+        <details class="faq-item" open>
+          <summary>{entry.q}</summary>
+          <p>{entry.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <p class="block-disclaimer">
+      This is parody content for entertainment and UI experimentation. No real transactions occur.
+    </p>
+    <p class="page-back-link"><a href="/">Back to homepage</a></p>
+  </section>
+</BaseLayout>

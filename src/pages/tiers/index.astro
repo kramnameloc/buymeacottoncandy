@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { SITE_NAME, TIERS } from "../../lib/site-content";
+---
+
+<BaseLayout
+  title={`Cotton Candy Tiers | ${SITE_NAME}`}
+  description="Browse all parody support tiers and jump straight into your favorite cotton candy flavor level."
+  path="/tiers/"
+>
+  <section class="section container">
+    <div class="section-heading">
+      <p class="eyebrow">Tier directory</p>
+      <h1>All support tiers</h1>
+      <p class="hero-text">Each tier is fake, friendly, and built to be shareable.</p>
+    </div>
+
+    <div class="tier-grid">
+      {TIERS.map((tier) => (
+        <article class="tier-card">
+          <h2>{tier.title}</h2>
+          <p class="tier-price">{tier.priceLabel}</p>
+          <p class="tier-joke">{tier.joke}</p>
+          <a class="button button-small" href={`/?tier=${tier.id}#tiers`}>
+            Open this tier on home page
+          </a>
+        </article>
+      ))}
+    </div>
+
+    <p class="page-back-link"><a href="/">Back to homepage</a></p>
+  </section>
+</BaseLayout>
